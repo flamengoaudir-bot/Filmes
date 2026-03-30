@@ -8,14 +8,20 @@
 <style>
 body {margin:0;font-family:Arial;background:#111;color:#fff;}
 header {padding:15px;font-size:22px;font-weight:bold;}
-input {width:90%;padding:10px;margin:10px;border-radius:8px;border:none;}
 .grid {display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px;}
-.card {background:#222;border-radius:10px;overflow:hidden;}
+.card {background:#222;border-radius:10px;overflow:hidden;cursor:pointer;}
 .card img {width:100%;}
 .card h3 {padding:5px;font-size:14px;}
-.lista {padding:10px;}
-.item {border-bottom:1px solid #333;padding:10px 0;}
-button {margin:5px;padding:10px;border:none;border-radius:8px;}
+#modal {
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.9);
+  display:none;
+  padding:20px;
+  overflow:auto;
+}
+button {padding:10px;border:none;border-radius:8px;}
 </style>
 </head>
 
@@ -23,111 +29,55 @@ button {margin:5px;padding:10px;border:none;border-radius:8px;}
 
 <header>🎬 Meus Filmes</header>
 
-<input type="text" id="busca" placeholder="Buscar..." onkeyup="buscar()">
-
-<button onclick="toggle()">📋/🎬</button>
-<button onclick="recomendar()">🎲</button>
-
 <div id="grid" class="grid"></div>
-<div id="lista" class="lista" style="display:none;"></div>
+
+<div id="modal" onclick="fechar()"></div>
 
 <script>
 
-let modo = "grid";
-
 const filmes = [
-
-{
-nome:"Anaconda (2025)",
-nota:3.5,
-poster:"https://image.tmdb.org/t/p/w500/9d1.jpg",
-curiosidades:"Comédia metalinguística com Jack Black e Paul Rudd. Improviso foi essencial nas cenas."
-},
-
 {
 nome:"Magnólia (1999)",
 nota:8.5,
-poster:"https://image.tmdb.org/t/p/w500/u0b.jpg",
-curiosidades:"Tom Cruise aceitou salário reduzido. Famoso pela chuva de sapos."
+poster:"https://image.tmdb.org/t/p/w500/7D430eqZj8y3oVkLFfsWXGRcpEG.jpg",
+curiosidades:"Tom Cruise teve uma das melhores atuações da carreira. Filme famoso pela chuva de sapos."
 },
-
 {
 nome:"Era Uma Vez em Hollywood (2019)",
 nota:8.0,
-poster:"https://image.tmdb.org/t/p/w500/8j.jpg",
-curiosidades:"Brad Pitt venceu Oscar. Filme recria LA de 1969 com fidelidade extrema."
-},
-
-{
-nome:"Peaky Blinders: O Homem Imortal (2026)",
-nota:8.0,
-poster:"https://image.tmdb.org/t/p/w500/7p.jpg",
-curiosidades:"Encerramento da saga Shelby com escala maior e clima de guerra."
-},
-
-{
-nome:"A Hora do Mal (2025)",
-nota:7.5,
-poster:"https://image.tmdb.org/t/p/w500/5h.jpg",
-curiosidades:"Terror psicológico moderno com narrativa fragmentada."
-},
-
-{
-nome:"Operação Final (2018)",
-nota:5.5,
-poster:"https://image.tmdb.org/t/p/w500/4o.jpg",
-curiosidades:"Baseado em missão real da Mossad na Argentina."
-},
-
-{
-nome:"Bugonia (2025)",
-nota:4.0,
-poster:"https://image.tmdb.org/t/p/w500/3b.jpg",
-curiosidades:"Yorgos Lanthimos traz humor estranho em remake coreano."
-},
-
-{
-nome:"Oi, Sumido! (2025)",
-nota:2.0,
-poster:"https://image.tmdb.org/t/p/w500/2s.jpg",
-curiosidades:"Explora relações modernas com desconforto emocional."
+poster:"https://image.tmdb.org/t/p/w500/8j58iEBw9pOXFD2L0nt0ZXeHviB.jpg",
+curiosidades:"Brad Pitt ganhou Oscar. Recriação perfeita de 1969."
 }
-
 ];
 
 function render(){
+  const grid = document.getElementById("grid");
   grid.innerHTML="";
-  lista.innerHTML="";
 
   filmes.forEach(f=>{
-    grid.innerHTML += `<div class="card">
-      <img src="${f.poster}">
-      <h3>${f.nome} ⭐ ${f.nota}</h3>
-    </div>`;
-
-    lista.innerHTML += `<div class="item">
-      <strong>${f.nome}</strong> ⭐ ${f.nota}<br>
-      ${f.curiosidades}
-    </div>`;
+    grid.innerHTML += `
+      <div class="card" onclick="abrir(${JSON.stringify(f).replace(/"/g,'&quot;')})">
+        <img src="${f.poster}">
+        <h3>${f.nome} ⭐ ${f.nota}</h3>
+      </div>
+    `;
   });
 }
 
-function toggle(){
-  modo = modo==="grid" ? "lista":"grid";
-  grid.style.display = modo==="grid" ? "grid":"none";
-  lista.style.display = modo==="lista" ? "block":"none";
+function abrir(f){
+  const modal = document.getElementById("modal");
+  modal.style.display="block";
+  modal.innerHTML = `
+    <h2>${f.nome}</h2>
+    <img src="${f.poster}" style="width:100%">
+    <p><b>Nota:</b> ${f.nota}</p>
+    <p>${f.curiosidades}</p>
+    <button onclick="fechar()">Fechar</button>
+  `;
 }
 
-function buscar(){
-  let t = busca.value.toLowerCase();
-  document.querySelectorAll(".card, .item").forEach(el=>{
-    el.style.display = el.innerText.toLowerCase().includes(t) ? "" : "none";
-  });
-}
-
-function recomendar(){
-  let f = filmes[Math.floor(Math.random()*filmes.length)];
-  alert("🎬 Assista: " + f.nome);
+function fechar(){
+  document.getElementById("modal").style.display="none";
 }
 
 render();
