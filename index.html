@@ -12,16 +12,18 @@ header {padding:15px;font-size:22px;font-weight:bold;}
 .card {background:#222;border-radius:10px;overflow:hidden;cursor:pointer;}
 .card img {width:100%;}
 .card h3 {padding:5px;font-size:14px;}
+
 #modal {
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,0.9);
-  display:none;
-  padding:20px;
-  overflow:auto;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.95);
+display:none;
+padding:20px;
+overflow:auto;
 }
-button {padding:10px;border:none;border-radius:8px;}
+
+button {padding:10px;border:none;border-radius:8px;margin-top:10px;}
 </style>
 </head>
 
@@ -31,7 +33,7 @@ button {padding:10px;border:none;border-radius:8px;}
 
 <div id="grid" class="grid"></div>
 
-<div id="modal" onclick="fechar()"></div>
+<div id="modal"></div>
 
 <script>
 
@@ -54,9 +56,9 @@ function render(){
   const grid = document.getElementById("grid");
   grid.innerHTML="";
 
-  filmes.forEach(f=>{
+  filmes.forEach((f, i)=>{
     grid.innerHTML += `
-      <div class="card" onclick="abrir(${JSON.stringify(f).replace(/"/g,'&quot;')})">
+      <div class="card" onclick="abrir(${i})">
         <img src="${f.poster}">
         <h3>${f.nome} ⭐ ${f.nota}</h3>
       </div>
@@ -64,8 +66,10 @@ function render(){
   });
 }
 
-function abrir(f){
+function abrir(i){
+  const f = filmes[i];
   const modal = document.getElementById("modal");
+
   modal.style.display="block";
   modal.innerHTML = `
     <h2>${f.nome}</h2>
