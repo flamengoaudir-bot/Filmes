@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎬 Meus Filmes</title>
+
+<style>
+body {margin:0;font-family:Arial;background:#111;color:#fff;}
+header {padding:15px;font-size:22px;font-weight:bold;}
+input {width:90%;padding:10px;margin:10px;border-radius:8px;border:none;}
+.grid {display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px;}
+.card {background:#222;border-radius:10px;overflow:hidden;}
+.card img {width:100%;}
+.card h3 {padding:5px;font-size:14px;}
+.lista {padding:10px;}
+.item {border-bottom:1px solid #333;padding:10px 0;}
+button {margin:5px;padding:10px;border:none;border-radius:8px;}
+</style>
+</head>
+
+<body>
+
+<header>🎬 Meus Filmes</header>
+
+<input type="text" id="busca" placeholder="Buscar..." onkeyup="buscar()">
+
+<button onclick="toggle()">📋/🎬</button>
+<button onclick="recomendar()">🎲</button>
+
+<div id="grid" class="grid"></div>
+<div id="lista" class="lista" style="display:none;"></div>
+
+<script>
+
+let modo = "grid";
+
+const filmes = [
+{
+nome:"Anaconda",
+nota:3.5,
+poster:"https://via.placeholder.com/300x450",
+curiosidades:"Comédia metalinguística com Jack Black e Paul Rudd."
+},
+{
+nome:"Magnólia",
+nota:8.5,
+poster:"https://via.placeholder.com/300x450",
+curiosidades:"Narrativa interligada com cena icônica da chuva de sapos."
+}
+];
+
+function render(){
+  grid.innerHTML="";
+  lista.innerHTML="";
+
+  filmes.forEach(f=>{
+    grid.innerHTML += `<div class="card">
+      <img src="${f.poster}">
+      <h3>${f.nome} ⭐ ${f.nota}</h3>
+    </div>`;
+
+    lista.innerHTML += `<div class="item">
+      <strong>${f.nome}</strong> ⭐ ${f.nota}<br>
+      ${f.curiosidades}
+    </div>`;
+  });
+}
+
+function toggle(){
+  modo = modo==="grid" ? "lista":"grid";
+  grid.style.display = modo==="grid" ? "grid":"none";
+  lista.style.display = modo==="lista" ? "block":"none";
+}
+
+function buscar(){
+  let t = busca.value.toLowerCase();
+  document.querySelectorAll(".card, .item").forEach(el=>{
+    el.style.display = el.innerText.toLowerCase().includes(t) ? "" : "none";
+  });
+}
+
+function recomendar(){
+  let f = filmes[Math.floor(Math.random()*filmes.length)];
+  alert("🎬 Assista: " + f.nome);
+}
+
+render();
+
+</script>
+
+</body>
+</html>
